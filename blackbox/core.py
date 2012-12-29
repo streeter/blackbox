@@ -145,7 +145,6 @@ def hello():
         'source': 'https://github.com/kennethreitz/blackbox',
         'curator': 'Kenneth Reitz',
         'resources': {
-            '/': 'This resource.',
             '/records': 'The collection of records.',
             '/records/:id/content:': 'The content of the given record.',
             '/records/:id/ref': 'Redirects to reference URL.'
