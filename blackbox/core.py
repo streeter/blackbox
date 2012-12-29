@@ -152,9 +152,10 @@ def hello():
     }
     return jsonify(blackbox=j)
 
-@app.route('/filter')
-def hello2():
-    return 'Hello World!'
+@app.route('/records/<uuid>')
+def get_record(uuid):
+    r = Record(uuid)
+    return jsonify(record=r.json)
 
 if __name__ == '__main__':
     app.run()
