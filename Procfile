@@ -1,2 +1,2 @@
 web: gunicorn blackbox:app
-worker: celery worker -A blackbox --loglevel=info
+worker: celery worker -A blackbox.tasks --loglevel=info
