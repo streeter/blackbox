@@ -5,7 +5,7 @@ blinker==1.2
 boto==2.6.0
 distribute==0.6.31
 gunicorn==0.17.0
-pyelasticsearch==0.3
+-e git://github.com/rhec/pyelasticsearch.git@8d6c1dc0d9804ce7c377c806dd360f5eb7a5fb4a#egg=pyelasticsearch-dev
 raven==3.0.0
 requests==1.0.4
 simplejson==2.6.2
