@@ -14,7 +14,6 @@ from flask import Flask, request, Response, jsonify, redirect, url_for
 from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
-app.debug = True
 
 # Statics.
 ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
