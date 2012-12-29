@@ -10,7 +10,7 @@ from uuid import uuid4
 import requests
 from boto.s3.connection import S3Connection
 from celery import Celery
-from flask import Flask, request, Response, jsonify
+from flask import Flask, request, Response, jsonify, redirect
 from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
@@ -35,6 +35,8 @@ class Record(object):
         self.epoch = epoch()
         self.filename = None
         self.ref = None
+        self.description = None
+        self.author = None
         self.links = {}
         self.metadata = {}
 
@@ -51,6 +53,8 @@ class Record(object):
         r.ref = j.get('ref')
         r.links = j.get('links')
         r.metadata = j.get('metadata')
+        r.description = j.get('description')
+        r.author = j.get('author')
 
         return r
 
@@ -121,7 +125,9 @@ class Record(object):
             'filename': self.filename,
             'ref': self.ref,
             'links': self.links,
-            'metadata': self.metadata
+            'metadata': self.metadata,
+            'description': self.description,
+            'author': self.author
         }
 
     @property
@@ -154,8 +160,15 @@ def hello():
 
 @app.route('/records/<uuid>')
 def get_record(uuid):
-    r = Record(uuid)
-    return jsonify(record=r.json)
+    r = Record.from_uuid(uuid)
+    return jsonify(record=r.dict)
+
+@app.route('/records/<uuid>/download')
+def download_record(uuid):
+    r = Record.from_uuid(uuid)
+    return redirect(r.content_url)
+
+
 
 if __name__ == '__main__':
     app.run()
