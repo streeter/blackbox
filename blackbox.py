@@ -8,7 +8,6 @@ from datetime import datetime
 from uuid import uuid4
 
 from boto.s3.connection import S3Connection
-from boto.s3.key import Key
 
 from pyelasticsearch import ElasticSearch
 from flask import Flask
@@ -28,8 +27,26 @@ class Record(object):
         self.links = {}
         self.metadata = {}
 
+    def upload(self, data=None, url=None):
+        key = bucket.new_key(self.uuid)
+
+        if data:
+            key.set_contents_from_string(data)
+
+        if url:
+            # TODO: upload files from external URL.
+            pass
+
     @property
     def content(self):
+        pass
+
+    @property
+    def content_url(self):
+        pass
+
+    @property
+    def archive_url(self):
         pass
 
     def save(self):
@@ -41,16 +58,17 @@ class Record(object):
         key = bucket.new_key('{0}.json'.format(self.uuid))
         key.update_metadata({'Content-Type': 'application/json'})
 
-        key.set_contents_from_string(self.json())
+        key.set_contents_from_string(self.json)
 
     def index(self):
-        pass
+         es.index("archives", "record", self.dict, id=self.uuid)
 
     def archive(self):
         pass
 
-    def json(self):
-        return json.dumps({
+    @property
+    def dict(self):
+        return {
             'uuid': self.uuid,
             'content_type': self.content_type,
             'epoch': self.epoch,
@@ -58,7 +76,11 @@ class Record(object):
             'ref': self.ref,
             'links': self.links,
             'metadata': self.metadata
-        })
+        }
+
+    @property
+    def json(self):
+        return json.dumps(self.dict)
 
     def __repr__(self):
         return '<Record {0}>'.format(self.uuid)
@@ -68,7 +90,7 @@ def epoch(dt=None):
     if not dt:
         dt = datetime.utcnow()
 
-    return time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000
+    return int(time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000)
 
 
 @app.route('/')
