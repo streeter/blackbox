@@ -7,10 +7,11 @@ import time
 from datetime import datetime
 from uuid import uuid4
 
+import requests
 from boto.s3.connection import S3Connection
-
-from pyelasticsearch import ElasticSearch
+from celery import Celery
 from flask import Flask
+from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
 
@@ -18,10 +19,13 @@ app = Flask(__name__)
 ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
+CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
+
 
 # Connection pools.
 es = ElasticSearch(ELASTICSEARCH_URL)
-bucket = S3Connection().create_bucket(S3_BUCKET)
+bucket = S3Connection().get_bucket(S3_BUCKET)
+celery = Celery(broker=CLOUDAMQP_URL)
 
 
 class Record(object):
@@ -50,8 +54,14 @@ class Record(object):
 
         return r
 
+    @celery.task
     def upload(self, data=None, url=None):
         key = bucket.new_key(self.uuid)
+
+        if url:
+            # TODO: upload files from external URL.
+            r = requests.get(url)
+            data = r.content
 
         if data:
             # TODO: Delay this to celery?.
@@ -59,9 +69,7 @@ class Record(object):
             key.set_contents_from_string(data)
             key.make_public()
 
-        if url:
-            # TODO: upload files from external URL.
-            pass
+
 
     @property
     def content(self):
