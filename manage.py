@@ -6,6 +6,9 @@ from myapp import app
 
 manager = Manager(app)
 
+# TODO: purge elasticsearch
+# TODO: seed elasticsearch
+
 @manager.command
 def hello():
     print "hello"
