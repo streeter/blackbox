@@ -148,7 +148,7 @@ def epoch(dt=None):
     return int(time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000)
 
 
-def iter_search(q='*', **kwargs):
+def iter_search(query='*', **kwargs):
 
     # Only ask for the UUID.
     kwargs['fields'] = 'uuid'
@@ -158,7 +158,7 @@ def iter_search(q='*', **kwargs):
     for (k, v) in kwargs.items():
         params['es_{0}'.format(k)] = v
 
-    results = es.search(q, index='archives', **params)
+    results = es.search(query, index='archives', **params)
 
     for result in results['hits']['hits']:
         yield Record.from_uuid(result['fields']['uuid'])
