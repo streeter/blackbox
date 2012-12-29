@@ -10,7 +10,6 @@ def iter_metadata():
         if key.name.endswith('.json'):
             yield key
 
-
 manager = Manager(app)
 
 # TODO: purge elasticsearch
@@ -30,7 +29,7 @@ def seed_index():
     print 'Indexing:'
     for key in progress.bar([i for i in iter_metadata()]):
         r = Record.from_uuid(key.name[:-5])
-        r.index()
+        r.index_task.delay(r)
 
 
 if __name__ == "__main__":

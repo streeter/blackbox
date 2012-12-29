@@ -54,7 +54,6 @@ class Record(object):
 
         return r
 
-    @celery.task
     def upload(self, data=None, url=None):
         key = bucket.new_key(self.uuid)
 
@@ -69,7 +68,13 @@ class Record(object):
             key.set_contents_from_string(data)
             key.make_public()
 
+    @celery.task
+    def upload_task(self, **kwargs):
+        self.upload(**kwargs)
 
+    @celery.task
+    def index_task(self, **kwargs):
+        self.index(**kwargs)
 
     @property
     def content(self):
@@ -99,6 +104,7 @@ class Record(object):
         key.update_metadata({'Content-Type': 'application/json'})
 
         key.set_contents_from_string(self.json)
+
 
     def index(self):
          es.index("archives", "record", self.dict, id=self.uuid)
