@@ -38,7 +38,7 @@ class Record(object):
         self.archive()
 
     def persist(self):
-        key = bucket.lookup('{0}.json'.format(self.uuid))
+        key = bucket.new_key('{0}.json'.format(self.uuid))
         key.update_metadata({'Content-Type': 'application/json'})
 
         key.set_contents_from_string(self.json())
