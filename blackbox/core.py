@@ -14,6 +14,7 @@ from flask import Flask, request, Response, jsonify, redirect, url_for
 from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
+app.debug = os.environ.get('DEBUG')
 
 # Statics.
 ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
@@ -164,14 +165,24 @@ def epoch(dt=None):
     return int(time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000)
 
 
-def iter_search(query='*', **kwargs):
+def iter_search(query=None, **kwargs):
 
     # Pepare elastic search queries.
     params = {}
     for (k, v) in kwargs.items():
         params['es_{0}'.format(k)] = v
 
-    results = es.search(query, index='archives', **params)
+    q = {
+        'sort': [
+            {"epoch" : {"order" : "desc"}},
+        ]
+    }
+
+    if query:
+        q['query'] = {'term': {'query': query}},
+
+
+    results = es.search(q, index='archives', **params)
 
     for hit in results['hits']['hits']:
         yield Record.from_hit(hit)

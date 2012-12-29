@@ -43,6 +43,9 @@ for photo in iter_photos():
     r.links['src'] = photo['url']
     r.metadata['service'] = 'instagram'
     r.metadata['instagram_filter'] = photo['filter']
+    r.metadata['location'] = photo['location']
+    r.metadata['caption'] = photo['caption']
+
     r.save()
 
     r.upload_task.delay(r, url=photo['url'])
