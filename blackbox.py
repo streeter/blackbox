@@ -14,8 +14,15 @@ from flask import Flask
 
 app = Flask(__name__)
 
-es = ElasticSearch(os.environ['ELASTICSEARCH_URL'])
-bucket = S3Connection().create_bucket(os.environ['S3_BUCKET'])
+# Statics.
+ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
+S3_BUCKET = os.environ['S3_BUCKET']
+S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
+
+# Connection pools.
+es = ElasticSearch(ELASTICSEARCH_URL)
+bucket = S3Connection().create_bucket(S3_BUCKET)
+
 
 class Record(object):
     def __init__(self):
@@ -27,11 +34,30 @@ class Record(object):
         self.links = {}
         self.metadata = {}
 
+    @classmethod
+    def from_uuid(cls, uuid):
+        key = bucket.get_key('{0}.json'.format(uuid))
+        j = json.loads(key.read())['record']
+
+        r = cls()
+        r.uuid = j.get('uuid')
+        r.content_type = j.get('content_type')
+        r.epoch = j.get('epoch')
+        r.filename = j.get('filename')
+        r.ref = j.get('ref')
+        r.links = j.get('links')
+        r.metadata = j.get('metadata')
+
+        return r
+
     def upload(self, data=None, url=None):
         key = bucket.new_key(self.uuid)
 
         if data:
+            # TODO: Delay this to celery?.
+            # No, just make the whole call outside of celery
             key.set_contents_from_string(data)
+            key.make_public()
 
         if url:
             # TODO: upload files from external URL.
@@ -39,11 +65,17 @@ class Record(object):
 
     @property
     def content(self):
-        pass
+        key = bucket.get_key(self.uuid)
+        return key.read()
 
     @property
     def content_url(self):
-        pass
+        prefix = 'http://{}.s3.amazonaws.com'.format(S3_BUCKET)
+
+        if S3_BUCKET_DOMAIN:
+            prefix = 'http://{}'.format(S3_BUCKET_DOMAIN)
+
+        return '{}/{}'.format(prefix, self.uuid)
 
     @property
     def archive_url(self):
@@ -80,7 +112,7 @@ class Record(object):
 
     @property
     def json(self):
-        return json.dumps(self.dict)
+        return json.dumps({'record': self.dict})
 
     def __repr__(self):
         return '<Record {0}>'.format(self.uuid)
