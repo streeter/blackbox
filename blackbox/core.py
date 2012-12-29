@@ -144,27 +144,16 @@ def hello():
     j = {
         'source': 'https://github.com/kennethreitz/blackbox',
         'resources': {
-            'TBD': 'TBD'
+            '/': 'This resource.',
+            '/records': 'The collection of records.',
+            '/records/:id/content:': 'The content of the given record.',
+            '/records/:id/ref': 'Redirects to reference URL.'
         }
     }
     return jsonify(blackbox=j)
 
-@app.route('/search/')
+@app.route('/filter')
 def hello2():
-    return 'Hello World!'
-
-@app.route('/collections/', methods=['GET'])
-def get_collection():
-    return 'Hello World!'
-
-
-@app.route('/collections/', methods=['POST'])
-def post_collection():
-    return 'Hello World!'
-
-
-@app.route('/collections/', methods=['POST'])
-def put_collection():
     return 'Hello World!'
 
 if __name__ == '__main__':
