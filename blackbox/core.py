@@ -10,7 +10,7 @@ from uuid import uuid4
 import requests
 from boto.s3.connection import S3Connection
 from celery import Celery
-from flask import Flask
+from flask import Flask, request, Response, jsonify
 from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
@@ -141,7 +141,13 @@ def epoch(dt=None):
 
 @app.route('/')
 def hello():
-    return 'Hello World!'
+    j = {
+        'source': 'https://github.com/kennethreitz/blackbox',
+        'resources': {
+            'TBD': 'TBD'
+        }
+    }
+    return jsonify(blackbox=j)
 
 @app.route('/search/')
 def hello2():
