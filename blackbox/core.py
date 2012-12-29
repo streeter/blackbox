@@ -143,6 +143,7 @@ def epoch(dt=None):
 def hello():
     j = {
         'source': 'https://github.com/kennethreitz/blackbox',
+        'curator': 'Kenneth Reitz',
         'resources': {
             '/': 'This resource.',
             '/records': 'The collection of records.',
