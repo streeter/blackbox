@@ -14,6 +14,7 @@ from flask import Flask, request, Response, jsonify, redirect
 from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
+app.debug = True
 
 # Statics.
 ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
@@ -147,6 +148,22 @@ def epoch(dt=None):
     return int(time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000)
 
 
+def iter_search(q='*', **kwargs):
+
+    # Only ask for the UUID.
+    kwargs['fields'] = 'uuid'
+
+    # Pepare elastic search queries.
+    params = {}
+    for (k, v) in kwargs.items():
+        params['es_{0}'.format(k)] = v
+
+    results = es.search(q, index='archives', **params)
+
+    for result in results['hits']['hits']:
+        yield Record.from_uuid(result['fields']['uuid'])
+
+
 @app.route('/')
 def hello():
     j = {
@@ -159,6 +176,22 @@ def hello():
         }
     }
     return jsonify(blackbox=j)
+
+@app.route('/records/')
+def get_records():
+
+    args = request.args.to_dict()
+    results = iter_search(request.args.get('q'), **args)
+
+    def gen():
+        for result in results:
+            yield result.dict
+
+
+    return jsonify(records=[r for r in gen()])
+
+
+
 
 @app.route('/records/<uuid>')
 def get_record(uuid):
