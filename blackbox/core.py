@@ -58,6 +58,23 @@ class Record(object):
 
         return r
 
+    @classmethod
+    def from_hit(cls, hit):
+        j = hit['_source']
+
+        r = cls()
+        r.uuid = j.get('uuid')
+        r.content_type = j.get('content_type')
+        r.epoch = j.get('epoch')
+        r.filename = j.get('filename')
+        r.ref = j.get('ref')
+        r.links = j.get('links')
+        r.metadata = j.get('metadata')
+        r.description = j.get('description')
+        r.author = j.get('author')
+
+        return r
+
     def upload(self, data=None, url=None):
 
         if url:
@@ -149,9 +166,6 @@ def epoch(dt=None):
 
 def iter_search(query='*', **kwargs):
 
-    # Only ask for the UUID.
-    kwargs['fields'] = 'uuid'
-
     # Pepare elastic search queries.
     params = {}
     for (k, v) in kwargs.items():
@@ -159,8 +173,8 @@ def iter_search(query='*', **kwargs):
 
     results = es.search(query, index='archives', **params)
 
-    for result in results['hits']['hits']:
-        yield Record.from_uuid(result['fields']['uuid'])
+    for hit in results['hits']['hits']:
+        yield Record.from_hit(hit)
 
 
 @app.route('/')
