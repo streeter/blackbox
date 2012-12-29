@@ -59,7 +59,6 @@ class Record(object):
         return r
 
     def upload(self, data=None, url=None):
-        key = bucket.new_key(self.uuid)
 
         if url:
             # TODO: upload files from external URL.
@@ -67,8 +66,11 @@ class Record(object):
             data = r.content
 
         if data:
-            # TODO: Delay this to celery?.
-            # No, just make the whole call outside of celery
+            key = bucket.new_key(self.uuid)
+
+            if self.content_type:
+                key.update_metadata({'Content-Type': self.content_type})
+
             key.set_contents_from_string(data)
             key.make_public()
 
