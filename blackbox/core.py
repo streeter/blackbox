@@ -10,7 +10,7 @@ from uuid import uuid4
 import requests
 from boto.s3.connection import S3Connection
 from celery import Celery
-from flask import Flask, request, Response, jsonify, redirect
+from flask import Flask, request, Response, jsonify, redirect, url_for
 from pyelasticsearch import ElasticSearch
 
 app = Flask(__name__)
@@ -185,7 +185,10 @@ def get_records():
 
     def gen():
         for result in results:
-            yield result.dict
+            d = result.dict
+            d['path'] = url_for('get_record', uuid=result.uuid)
+
+            yield d
 
 
     return jsonify(records=[r for r in gen()])
