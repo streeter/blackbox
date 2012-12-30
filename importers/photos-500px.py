@@ -4,11 +4,12 @@
 """500px importer.
 
 Usage:
-  photos-500px.py [--update]
+  photos-500px.py [--update] [--dry]
 
 Options:
   -h --help     Show this screen.
   -u --update   Update existing records.
+  -d --dry      Executes a dry run.
 """
 
 
@@ -16,7 +17,8 @@ from _util import *
 from docopt import docopt
 
 
-username = foauth.get('http://foauth.org/api.500px.com/v1/users/').json()['user']['username']
+username = foauth.get('https://api.500px.com/v1/users/').json()['user']['username']
+print username
 
 def lookup_record(photo):
 
@@ -26,15 +28,15 @@ def lookup_record(photo):
         return None
 
 def iter_photos():
-    r = foauth.get('http://foauth.org/api.500px.com/v1/photos?feature=user&username={}'.format(username))
+    r = foauth.get('https://api.500px.com/v1/photos?feature=user&username={}'.format(username))
     total_pages = r.json()['total_pages']
 
     for i in range(total_pages):
-        r = foauth.get('http://foauth.org/api.500px.com/v1/photos?feature=user&username={}&page={}'.format(username, i+1))
+        r = foauth.get('https://api.500px.com/v1/photos?feature=user&username={}&page={}'.format(username, i+1))
         for photo in r.json()['photos']:
             yield photo
 
-def main(update=False):
+def main(update=False, dry=False):
     for photo in iter_photos():
 
         existing = lookup_record(photo)
@@ -61,12 +63,13 @@ def main(update=False):
         r.metadata['nsfw'] = photo['nsfw']
         r.metadata['src'] = photo['image_url'].replace('2.jpg', '4.jpg')
 
-        r.save()
+        if not dry:
+            r.save()
 
-        r.upload_task.delay(r, url=photo['image_url'].replace('2.jpg', '4.jpg'))
+            r.upload_task.delay(r, url=photo['image_url'].replace('2.jpg', '4.jpg'))
         print r
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='500px Importer')
-    main(arguments['--update'])
+    main(update=arguments['--update'], dry=arguments['--dry'])
 

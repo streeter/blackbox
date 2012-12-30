@@ -17,7 +17,7 @@ from _util import *
 from docopt import docopt
 
 
-URL = 'https://foauth.org/api.instagram.com/v1/users/self/media/recent'
+URL = 'https://api.instagram.com/v1/users/self/media/recent'
 
 def lookup_record(photo):
 
