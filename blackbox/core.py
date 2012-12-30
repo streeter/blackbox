@@ -169,12 +169,16 @@ def epoch(dt=None):
     return int(time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000)
 
 
-def iter_search(query=None, **kwargs):
+def iter_search(query, **kwargs):
 
+    if query is None:
+        query = '*'
     # Pepare elastic search queries.
     params = {}
     for (k, v) in kwargs.items():
         params['es_{0}'.format(k)] = v
+
+    params['es_q'] = query
 
     q = {
         'sort': [
@@ -182,12 +186,14 @@ def iter_search(query=None, **kwargs):
         ]
     }
 
-    if query:
-        q['query'] = {'term': {'query': query}},
+    # if query:
+    q['query'] = {'term': {'query': query}},
 
 
     results = es.search(q, index='archives', **params)
+    # print results
 
+    params['es_q'] = query
     for hit in results['hits']['hits']:
         yield Record.from_hit(hit)
 
@@ -199,8 +205,8 @@ def hello():
         'curator': 'Kenneth Reitz',
         'resources': {
             '/records': 'The collection of records.',
-            '/records/:id/content:': 'The content of the given record.',
-            '/records/:id/ref': 'Redirects to reference URL.'
+            '/records/:id': 'The metadata of the given record.',
+            '/records/:id/download:': 'The content of the given record.',
         }
     }
     return jsonify(blackbox=j)
@@ -217,7 +223,6 @@ def get_records():
             d['path'] = url_for('get_record', uuid=result.uuid)
 
             yield d
-
 
     return jsonify(records=[r for r in gen()])
 
