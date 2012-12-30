@@ -220,7 +220,8 @@ def get_records():
     def gen():
         for result in results:
             d = result.dict
-            d['path'] = url_for('get_record', uuid=result.uuid)
+            d['path:meta'] = url_for('get_record', uuid=result.uuid)
+            d['path:data'] = url_for('download_record', uuid=result.uuid)
 
             yield d
 
