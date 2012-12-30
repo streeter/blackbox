@@ -206,7 +206,7 @@ def hello():
         'resources': {
             '/records': 'The collection of records.',
             '/records/:id': 'The metadata of the given record.',
-            '/records/:id/download:': 'The content of the given record.',
+            '/records/:id/download': 'The content of the given record.',
         }
     }
     return jsonify(blackbox=j)
