@@ -82,7 +82,6 @@ class Record(object):
     def upload(self, data=None, url=None):
 
         if url:
-            # TODO: upload files from external URL.
             r = requests.get(url)
             data = r.content
 
@@ -122,6 +121,7 @@ class Record(object):
         pass
 
     def save(self):
+
         self.persist()
         self.index()
         self.archive()
