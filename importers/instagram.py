@@ -4,11 +4,12 @@
 """Instagram importer.
 
 Usage:
-  instagram.py [--update]
+  instagram.py [--update] [--dry]
 
 Options:
   -h --help     Show this screen.
   -u --update   Update existing records.
+  -d --dry      Executes a dry run.
 """
 
 
@@ -59,7 +60,7 @@ def iter_photos():
             yield j
 
 
-def main(update=False):
+def main(update=False, dry=False):
     for photo in iter_photos():
 
         existing = lookup_record(photo)
@@ -85,13 +86,14 @@ def main(update=False):
         r.metadata['location'] = photo['location']
         r.metadata['caption'] = photo['caption']
 
-        r.save()
+        if not dry:
+            r.save()
 
-        r.upload_task.delay(r, url=photo['url'])
+            r.upload_task.delay(r, url=photo['url'])
         print r
 
 
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Instagram Importer')
-    main(arguments['--update'])
+    main(update=arguments['--update'], dry=arguments['--dry'])

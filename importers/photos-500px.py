@@ -18,7 +18,6 @@ from docopt import docopt
 
 
 username = foauth.get('https://api.500px.com/v1/users/').json()['user']['username']
-print username
 
 def lookup_record(photo):
 
