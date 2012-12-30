@@ -43,7 +43,7 @@ for photo in iter_photos():
     r.description = 'Instagram by @kennethreitz. Caption: {}'.format(photo['caption'])
     r.author = 'Kenneth Reitz'
     r.links['src'] = photo['url']
-    r.epoch = photo['created'] * 100
+    r.epoch = photo['created'] * 1000
 
     r.metadata['service'] = 'instagram'
     r.metadata['instagram_filter'] = photo['filter']
