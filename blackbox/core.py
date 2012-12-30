@@ -34,6 +34,7 @@ class Record(object):
         self.uuid = str(uuid4())
         self.content_type = 'application/octet-stream'
         self.epoch = epoch()
+        self.added = epoch()
         self.filename = None
         self.ref = None
         self.description = None
@@ -50,6 +51,7 @@ class Record(object):
         r.uuid = j.get('uuid')
         r.content_type = j.get('content_type')
         r.epoch = j.get('epoch')
+        r.added = j.get('added')
         r.filename = j.get('filename')
         r.ref = j.get('ref')
         r.links = j.get('links')
@@ -67,6 +69,7 @@ class Record(object):
         r.uuid = j.get('uuid')
         r.content_type = j.get('content_type')
         r.epoch = j.get('epoch')
+        r.added = j.get('added')
         r.filename = j.get('filename')
         r.ref = j.get('ref')
         r.links = j.get('links')
@@ -142,6 +145,7 @@ class Record(object):
             'uuid': self.uuid,
             'content_type': self.content_type,
             'epoch': self.epoch,
+            'added': self.added,
             'filename': self.filename,
             'ref': self.ref,
             'links': self.links,

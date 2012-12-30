@@ -21,12 +21,14 @@ def iter_photos():
 
     for page in iter_pages():
         for i in page['data']:
+
             j = {
                 'url': i['images']['standard_resolution']['url'],
                 'link': i['link'],
                 'location': i.get('location'),
                 'filter': i['filter'],
-                'caption': i['caption']['text'] if i.get('caption') else None
+                'caption': i['caption']['text'] if i.get('caption') else None,
+                'created': int(i['created_time'])
             }
 
             yield j
@@ -41,6 +43,8 @@ for photo in iter_photos():
     r.description = 'Instagram by @kennethreitz. Caption: {}'.format(photo['caption'])
     r.author = 'Kenneth Reitz'
     r.links['src'] = photo['url']
+    r.epoch = photo['created'] * 100
+
     r.metadata['service'] = 'instagram'
     r.metadata['instagram_filter'] = photo['filter']
     r.metadata['location'] = photo['location']
