@@ -49,10 +49,6 @@ def main(update=False):
         r.content_type = 'image/jpeg'
         r.ref = 'http://500px.com/photo/{}'.format(photo['id'])
         r.description = u'500px: {}, '.format(photo['name'], photo['description'])
-        # try:
-        #     r.description = u'500px: {}, '.format(photo['name'], photo['description'])
-        # except Exception:
-        #     r.description = '500px photo'
         r.author = 'Kenneth Reitz'
         r.epoch = epoch(parse(photo[u'created_at']))
 
