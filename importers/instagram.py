@@ -63,10 +63,12 @@ def main(update=False):
     for photo in iter_photos():
 
         existing = lookup_record(photo)
-        print 'Existing:',
-        if existing and not update:
-            print '{} found, exiting.'.format(existing)
-            exit()
+        if existing:
+            print 'Existing:',
+
+            if not update:
+                print '{0}. \nExiting.'.format(existing)
+                exit()
 
         r = existing or blackbox.Record()
 

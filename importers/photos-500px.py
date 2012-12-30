@@ -1,8 +1,29 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""500px importer.
+
+Usage:
+  photos-500px.py [--update]
+
+Options:
+  -h --help     Show this screen.
+  -u --update   Update existing records.
+"""
+
+
 from _util import *
+from docopt import docopt
 
 
 username = foauth.get('http://foauth.org/api.500px.com/v1/users/').json()['user']['username']
 
+def lookup_record(photo):
+
+    try:
+        return blackbox.iter_search('metadata.service:500px AND metadata.id:{}'.format(photo['id'])).next()
+    except Exception:
+        return None
 
 def iter_photos():
     r = foauth.get('http://foauth.org/api.500px.com/v1/photos?feature=user&username={}'.format(username))
@@ -13,30 +34,43 @@ def iter_photos():
         for photo in r.json()['photos']:
             yield photo
 
+def main(update=False):
+    for photo in iter_photos():
 
-for photo in iter_photos():
-    # print photo
+        existing = lookup_record(photo)
+        if existing:
+            print 'Existing:',
 
-    r = blackbox.Record()
-    r.content_type = 'image/jpeg'
-    r.ref = 'http://500px.com/photo/{}'.format(photo['id'])
-    try:
-        r.description = '500px: {}, '.format(photo['name'], photo['description'])
-    except Exception, e:
-        r.description = '500px photo'
-    r.author = 'Kenneth Reitz'
-    r.epoch = epoch(parse(photo[u'created_at']))
+            if not update:
+                print '{0}. \nExiting.'.format(existing)
+                exit()
 
-    r.metadata['service'] = '500px'
-    r.metadata['height'] = photo['height']
-    r.metadata['width'] = photo['width']
-    r.metadata['id'] = photo['id']
-    r.metadata['name'] = photo['name']
-    r.metadata['description'] = photo['width']
-    r.metadata['nsfw'] = photo['nsfw']
-    r.metadata['src'] = photo['image_url'].replace('2.jpg', '4.jpg')
+        r = existing or blackbox.Record()
+        r.content_type = 'image/jpeg'
+        r.ref = 'http://500px.com/photo/{}'.format(photo['id'])
+        r.description = u'500px: {}, '.format(photo['name'], photo['description'])
+        # try:
+        #     r.description = u'500px: {}, '.format(photo['name'], photo['description'])
+        # except Exception:
+        #     r.description = '500px photo'
+        r.author = 'Kenneth Reitz'
+        r.epoch = epoch(parse(photo[u'created_at']))
 
-    r.save()
+        r.metadata['service'] = '500px'
+        r.metadata['height'] = photo['height']
+        r.metadata['width'] = photo['width']
+        r.metadata['id'] = photo['id']
+        r.metadata['name'] = photo['name']
+        r.metadata['description'] = photo['width']
+        r.metadata['nsfw'] = photo['nsfw']
+        r.metadata['src'] = photo['image_url'].replace('2.jpg', '4.jpg')
 
-    r.upload_task.delay(r, url=photo['image_url'].replace('2.jpg', '4.jpg'))
-    print r
+        r.save()
+
+        r.upload_task.delay(r, url=photo['image_url'].replace('2.jpg', '4.jpg'))
+        print r
+
+if __name__ == '__main__':
+    arguments = docopt(__doc__, version='500px Importer')
+    main(arguments['--update'])
+
