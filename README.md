@@ -1,13 +1,17 @@
 Blackbox
 ========
 
-This is an experimental publishing platform that represents a culmination of  many of my passions and values: APIs, simplicity, persistence, and nostalgia.
+This experimental publishing platform is a culmination of my passions and interests: art, persistence, simplicity, and nostalgia.
 
 Everything I ever publish will have:
 
 - Permanent URLs
 - Query & Search
 - Continual Replication
+
+Everything is backed up and replicated. If any publishing platform shuts down, I retained every [tweet](http://archive.kennethreitz.org/42b7e752-df3e-46ae-a80e-95c2663d8895) or [photo](http://blackbox.kennethreitz.org/records/2b0ee27e-ce90-48cb-8fb8-c2cd782be990/download) I've ever published.
+
+This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/2011/10/internet-culture) situation.
 
 Example Queries
 ---------------
@@ -17,14 +21,10 @@ Example Queries
 - [instagrams in reverse order](http://blackbox.kennethreitz.org/records/?q=metadata.service:instagram&sort=epoch:asc&size=2000)
 - [instagrams with X-Pro II filter](http://blackbox.kennethreitz.org/records/?q=metadata.service:instagram%20AND%20metadata.filter:X-Pro%20II)
 
-Everything is backed up and replicated. If every social network shuts down net week, I can instantly see any [tweet](http://archive.kennethreitz.org/42b7e752-df3e-46ae-a80e-95c2663d8895) or [photo](http://blackbox.kennethreitz.org/records/2b0ee27e-ce90-48cb-8fb8-c2cd782be990/download) I've ever published.
-
-This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/2011/10/internet-culture) situation.
-
 Note on Licensing
 -----------------
 
-While this platform is being developed in the open, it is not open source at this time. All rights are reserved.
+While this platform is being developed in the open, it is not open source at this time. All rights are reserved until a LICENSE file is present.
 
 Moving Forward
 --------------
