@@ -36,7 +36,6 @@ cache = Cache()
 cache.cache = RedisCache()
 cache.cache._client = redis.from_url(REDIS_URL)
 
-
 class Record(object):
     def __init__(self):
         self.uuid = str(uuid4())
@@ -218,8 +217,8 @@ def hello():
     }
     return jsonify(blackbox=j)
 
-@cache.cached(timeout=50)
 @app.route('/records/')
+@cache.cached(timeout=50)
 def get_records():
 
     args = request.args.to_dict()
@@ -240,8 +239,8 @@ def get_record(uuid):
     r = Record.from_uuid(uuid)
     return jsonify(record=r.dict)
 
-@cache.cached(timeout=500)
 @app.route('/records/<uuid>/download')
+@cache.cached(timeout=500)
 def download_record(uuid):
     r = Record.from_uuid(uuid)
     return redirect(r.content_url)
