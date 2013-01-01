@@ -56,7 +56,7 @@ def main(update=False, dry=False, pages=1):
 
             if not update:
                 print '{0}. \nExiting.'.format(existing)
-                exit()
+                return
 
         r = existing or blackbox.Record()
         r.epoch = epoch(parse(tweet[u'created_at']))
@@ -67,6 +67,7 @@ def main(update=False, dry=False, pages=1):
         r.description = u'Tweet: {}'.format(tweet['text'])
         r.metadata['service'] = 'twitter'
         r.metadata['id'] = tweet['id']
+        r.metadata['text'] = tweet['text']
         r.metadata['retweeted'] = tweet['retweeted']
         r.metadata['retweet_count'] = tweet['retweet_count']
         r.metadata['entities'] = tweet['entities']

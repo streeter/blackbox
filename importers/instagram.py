@@ -69,7 +69,7 @@ def main(update=False, dry=False):
 
             if not update:
                 print '{0}. \nExiting.'.format(existing)
-                exit()
+                return
 
         r = existing or blackbox.Record()
 

@@ -18,3 +18,6 @@ foauth.mount('http', Foauth(os.environ['FOAUTH_USER'], os.environ['FOAUTH_PASS']
 
 # box = Session()
 # box.auth = (os.environ['SECRET_KEY'], os.environ['SECRET_KEY'])
+
+import logging
+logger = logging.getLogger()
