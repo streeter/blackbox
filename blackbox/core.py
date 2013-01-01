@@ -204,7 +204,12 @@ def iter_search(query, **kwargs):
         yield Record.from_hit(hit)
 
 @cache.memoize(timeout=SEARCH_TIMEOUT)
-def search(query, **kwargs):
+def search(query, sort=None, size=None, **kwargs):
+    if sort is not None:
+        kwargs['sort'] = sort
+    if size is not None:
+        kwargs['size'] = size
+
     return [r for r in iter_search(query, **kwargs)]
 
 @app.route('/')
