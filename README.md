@@ -24,7 +24,7 @@ This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/20
 Note on Licensing
 -----------------
 
-While this platform is being developed in the open, it is not open source at this time. All rights are reserved.
+While this platform is being developed in the open, it is not open source at this time. All rights are reserved for now.
 
 Moving Forward
 --------------
