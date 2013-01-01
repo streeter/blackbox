@@ -7,11 +7,14 @@ import time
 from datetime import datetime
 from uuid import uuid4
 
+import redis
 import requests
 from boto.s3.connection import S3Connection
 from celery import Celery
 from flask import Flask, request, Response, jsonify, redirect, url_for
+from werkzeug.contrib.cache import RedisCache
 from pyelasticsearch import ElasticSearch
+from flask.ext.cache import Cache
 
 app = Flask(__name__)
 app.debug = os.environ.get('DEBUG')
@@ -21,12 +24,17 @@ ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
 CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
+REDIS_URL = os.environ.get('OPENREDIS_URL')
 
 
 # Connection pools.
 es = ElasticSearch(ELASTICSEARCH_URL)
 bucket = S3Connection().get_bucket(S3_BUCKET)
 celery = Celery(broker=CLOUDAMQP_URL)
+
+cache = Cache()
+cache.cache = RedisCache()
+cache.cache._client = redis.from_url(REDIS_URL)
 
 
 class Record(object):
@@ -168,7 +176,6 @@ def epoch(dt=None):
 
     return int(time.mktime(dt.timetuple()) * 1000 + dt.microsecond / 1000)
 
-
 def iter_search(query, **kwargs):
 
     if query is None:
@@ -211,6 +218,7 @@ def hello():
     }
     return jsonify(blackbox=j)
 
+@cache.cached(timeout=50)
 @app.route('/records/')
 def get_records():
 
@@ -227,14 +235,12 @@ def get_records():
 
     return jsonify(records=[r for r in gen()])
 
-
-
-
 @app.route('/records/<uuid>')
 def get_record(uuid):
     r = Record.from_uuid(uuid)
     return jsonify(record=r.dict)
 
+@cache.cached(timeout=500)
 @app.route('/records/<uuid>/download')
 def download_record(uuid):
     r = Record.from_uuid(uuid)
