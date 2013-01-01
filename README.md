@@ -9,7 +9,7 @@ Everything I ever publish will have:
 - Query & Search
 - Continual Replication
 
-Everything is backed up and replicated. If every social network shuts down next week, I can instantly see any [tweet](http://archive.kennethreitz.org/42b7e752-df3e-46ae-a80e-95c2663d8895) or [photo](http://blackbox.kennethreitz.org/records/2b0ee27e-ce90-48cb-8fb8-c2cd782be990/download) I've ever published.
+Everything is backed up and replicated. If any publishing platform shuts down, I retained every [tweet](http://archive.kennethreitz.org/42b7e752-df3e-46ae-a80e-95c2663d8895) or [photo](http://blackbox.kennethreitz.org/records/2b0ee27e-ce90-48cb-8fb8-c2cd782be990/download) I've ever published.
 
 This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/2011/10/internet-culture) situation.
 
