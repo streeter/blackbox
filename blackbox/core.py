@@ -25,7 +25,7 @@ S3_BUCKET = os.environ['S3_BUCKET']
 S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
 CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
 REDIS_URL = os.environ.get('OPENREDIS_URL')
-
+SEARCH_TIMEOUT = 50
 
 # Connection pools.
 es = ElasticSearch(ELASTICSEARCH_URL)
@@ -203,6 +203,9 @@ def iter_search(query, **kwargs):
     for hit in results['hits']['hits']:
         yield Record.from_hit(hit)
 
+@cache.memoize(timeout=SEARCH_TIMEOUT)
+def search(query, **kwargs):
+    return [r for r in iter_search(query, **kwargs)]
 
 @app.route('/')
 def hello():
@@ -218,11 +221,10 @@ def hello():
     return jsonify(blackbox=j)
 
 @app.route('/records/')
-@cache.cached(timeout=50)
 def get_records():
 
     args = request.args.to_dict()
-    results = iter_search(request.args.get('q'), **args)
+    results = search(request.args.get('q'), **args)
 
     def gen():
         for result in results:
@@ -240,7 +242,6 @@ def get_record(uuid):
     return jsonify(record=r.dict)
 
 @app.route('/records/<uuid>/download')
-@cache.cached(timeout=500)
 def download_record(uuid):
     r = Record.from_uuid(uuid)
     return redirect(r.content_url)
