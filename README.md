@@ -9,6 +9,10 @@ Everything I ever publish will have:
 - Query & Search
 - Continual Replication
 
+Everything is backed up and replicated. If every social network shuts down next week, I can instantly see any [tweet](http://archive.kennethreitz.org/42b7e752-df3e-46ae-a80e-95c2663d8895) or [photo](http://blackbox.kennethreitz.org/records/2b0ee27e-ce90-48cb-8fb8-c2cd782be990/download) I've ever published.
+
+This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/2011/10/internet-culture) situation.
+
 Example Queries
 ---------------
 
@@ -16,10 +20,6 @@ Example Queries
 - [anything containing heroku](http://blackbox.kennethreitz.org/records/?q=heroku)
 - [instagrams in reverse order](http://blackbox.kennethreitz.org/records/?q=metadata.service:instagram&sort=epoch:asc&size=2000)
 - [instagrams with X-Pro II filter](http://blackbox.kennethreitz.org/records/?q=metadata.service:instagram%20AND%20metadata.filter:X-Pro%20II)
-
-Everything is backed up and replicated. If every social network shuts down net week, I can instantly see any [tweet](http://archive.kennethreitz.org/42b7e752-df3e-46ae-a80e-95c2663d8895) or [photo](http://blackbox.kennethreitz.org/records/2b0ee27e-ce90-48cb-8fb8-c2cd782be990/download) I've ever published.
-
-This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/2011/10/internet-culture) situation.
 
 Note on Licensing
 -----------------
