@@ -1,7 +1,7 @@
 Blackbox
 ========
 
-This experimental publishing platform is a culmination of my passions and interests: art, persistence, simplicity, and nostalgia.
+This experimental publishing platform is a culmination of my passions and interests: art, persistence, simplicity, and context.
 
 Everything I ever publish will have:
 
