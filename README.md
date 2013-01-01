@@ -21,6 +21,11 @@ Everything is backed up and replicated. If every social network shuts down net w
 
 This is the opposite of the [410 GONE](http://www.economist.com/blogs/babbage/2011/10/internet-culture) situation.
 
+Note on Licensing
+-----------------
+
+While this platform is being developed in the open, it is not open source at this time. All rights are reserved.
+
 Moving Forward
 --------------
 
