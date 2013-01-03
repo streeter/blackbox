@@ -46,6 +46,9 @@ def imports():
     print 'Importing Twitter'
     importers.twitter.main(dry=False, pages=2, update=True)
 
+    print 'Importing Flickr'
+    importers.flickr.main(dry=False)
+
 
 if __name__ == "__main__":
     manager.run()
