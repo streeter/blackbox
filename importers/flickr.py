@@ -32,7 +32,7 @@ def iter_photos():
     r = foauth.get(URL)
     j = r.json()
 
-    for page in range(j['photos']['pages']):
+    for page in range(j['photos']['pages']+1):
         r = foauth.get(URL, params={'page': page})
         j = r.json()
         for photo in j['photos']['photo']:
