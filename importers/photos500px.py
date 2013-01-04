@@ -63,9 +63,9 @@ def main(update=False, dry=False):
         r.metadata['src'] = photo['image_url'].replace('2.jpg', '4.jpg')
 
         if not dry:
-            r.save()
+            r.save(archive=True)
 
-            r.upload_task.delay(r, url=photo['image_url'].replace('2.jpg', '4.jpg'))
+            r.upload_task.delay(r, url=photo['image_url'].replace('2.jpg', '4.jpg'), archive=True)
         print r
 
 if __name__ == '__main__':

@@ -87,9 +87,9 @@ def main(update=False, dry=False):
         r.metadata['caption'] = photo['caption']
 
         if not dry:
-            r.save()
+            r.save(archive=True)
 
-            r.upload_task.delay(r, url=photo['url'])
+            r.upload_task.delay(r, url=photo['url'], archive=True)
         print r
 
 

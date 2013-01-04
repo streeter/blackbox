@@ -74,9 +74,9 @@ def main(update=False, dry=False, pages=1):
         r.metadata['coordinates'] = tweet.get('coordinates')
 
         if not dry:
-            r.save()
+            r.save(archive=True)
 
-            r.upload_task.delay(r, data=json.dumps(tweet))
+            r.upload_task.delay(r, data=json.dumps(tweet), archive=True)
         print r
 
 

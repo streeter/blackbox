@@ -92,7 +92,7 @@ class Record(object):
 
         return r
 
-    def upload(self, data=None, url=None):
+    def upload(self, data=None, url=None, archive=False):
 
         if url:
             r = requests.get(url)
@@ -106,6 +106,9 @@ class Record(object):
 
             key.set_contents_from_string(data)
             key.make_public()
+
+        if archive:
+            self.archive_upload(data=data, url=url)
 
     @celery.task
     def upload_task(self, **kwargs):
@@ -145,10 +148,13 @@ class Record(object):
     def meta_archive(self):
         return '{}.json'.format(self.content_archive)
 
-    def save(self):
+    def save(self, archive=False):
 
         self.persist()
         self.index()
+
+        if archive:
+            self.archive(upload=False)
 
     def persist(self):
         key = bucket.new_key('{0}.json'.format(self.uuid))
@@ -161,7 +167,7 @@ class Record(object):
     def index(self):
          es.index("archives", "record", self.dict, id=self.uuid)
 
-    def archive(self, upload=True):
+    def archive(self, upload=False):
 
         key_name = '{0}.json'.format(self.uuid)
 

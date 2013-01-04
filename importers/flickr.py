@@ -72,9 +72,9 @@ def main(update=False, dry=False):
         print r
 
         if not dry:
-            r.save()
+            r.save(archive=True)
 
-            r.upload_task.delay(r, url=photo['url_o'])
+            r.upload_task.delay(r, url=photo['url_o'], archive=True)
 
 
 
