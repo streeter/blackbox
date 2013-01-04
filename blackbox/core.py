@@ -9,7 +9,7 @@ from uuid import uuid4
 
 import redis
 import requests
-import bobo
+import boto
 from boto.s3.connection import S3Connection
 from celery import Celery
 from flask import Flask, request, Response, jsonify, redirect, url_for
