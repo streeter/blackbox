@@ -54,7 +54,7 @@ def imports():
     importers.photos500px.main(dry=False)
 
     print 'Importing Twitter'
-    importers.twitter.main(dry=False, pages=2, update=True)
+    importers.twitter.main(dry=False, pages=2, update=False)
 
     print 'Importing Flickr'
     importers.flickr.main(dry=False)
