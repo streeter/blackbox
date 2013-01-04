@@ -280,8 +280,8 @@ def get_records():
     def gen():
         for result in results:
             d = result.dict
-            d['links']['path:meta'] = url_for('get_record', uuid=result.uuid)
-            d['links']['path:data'] = url_for('download_record', uuid=result.uuid)
+            d['links']['path:meta'] = url_for('get_record', uuid=result.uuid, _external=True)
+            d['links']['path:data'] = url_for('download_record', uuid=result.uuid, _external=True)
             d['links']['archive:meta'] = result.meta_archive
             d['links']['archive:data'] = result.content_archive
 
