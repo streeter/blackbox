@@ -28,6 +28,7 @@ CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
 REDIS_URL = os.environ.get('OPENREDIS_URL')
 IA_ACCESS_KEY_ID = os.environ.get('IA_ACCESS_KEY_ID')
 IA_SECRET_ACCESS_KEY = os.environ.get('IA_SECRET_ACCESS_KEY')
+IA_BUCKET = os.environ.get('IA_BUCKET')
 SEARCH_TIMEOUT = 50
 
 # Connection pools.
@@ -35,7 +36,7 @@ celery = Celery(broker=CLOUDAMQP_URL)
 es = ElasticSearch(ELASTICSEARCH_URL)
 bucket = S3Connection().get_bucket(S3_BUCKET)
 ia = boto.connect_ia(IA_ACCESS_KEY_ID, IA_SECRET_ACCESS_KEY)
-archive = ia.lookup('kennethreitz-archive')
+archive = ia.lookup(IA_BUCKET)
 
 cache = Cache()
 cache.cache = RedisCache()
@@ -140,7 +141,6 @@ class Record(object):
 
         self.persist()
         self.index()
-        # self.archive()
 
     def persist(self):
         key = bucket.new_key('{0}.json'.format(self.uuid))
@@ -173,7 +173,6 @@ class Record(object):
                 key.update_metadata({'Content-Type': self.content_type})
 
             key.set_contents_from_string(data)
-            key.make_public()
 
     @property
     def dict(self):
