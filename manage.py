@@ -32,7 +32,7 @@ def seed_index():
         r.index_task.delay(r)
 
 @manager.command
-def archive():
+def seed_archive():
     print 'Archiving:'
     archive_keys = [key.name for key in archive.list()]
 
