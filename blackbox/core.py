@@ -115,7 +115,7 @@ class Record(object):
     def index_task(self, **kwargs):
         self.index(**kwargs)
 
-    @celery.task
+    @celery.task(rate_limit='30/m')
     def archive_task(self, **kwargs):
         self.archive(**kwargs)
 
@@ -152,14 +152,18 @@ class Record(object):
     def index(self):
          es.index("archives", "record", self.dict, id=self.uuid)
 
-    def archive(self, upload=True):
-        key = archive.new_key('{0}.json'.format(self.uuid))
-        key.update_metadata({'Content-Type': 'application/json'})
+    def archive(self, update=False, upload=True):
 
-        key.set_contents_from_string(self.json)
+        key_name = '{0}.json'.format(self.uuid)
 
-        if upload:
-            self.archive_upload(url=self.content_url)
+        if update or key_name not in archive:
+            key = archive.new_key(key_name)
+            key.update_metadata({'Content-Type': 'application/json'})
+
+            key.set_contents_from_string(self.json)
+
+            if upload:
+                self.archive_upload(url=self.content_url)
 
     def archive_upload(self, data=None, url=None):
         if url:
