@@ -34,9 +34,13 @@ def seed_index():
 @manager.command
 def archive():
     print 'Archiving:'
+    archive_keys = [key.name for key in archive.list()]
+
     for key in progress.bar([i for i in iter_metadata()]):
-        r = Record.from_uuid(key.name[:-5])
-        r.archive_task.delay(r)
+        if key.name not in archive_keys:
+
+            r = Record.from_uuid(key.name[:-5])
+            r.archive_task.delay(r)
 
 @manager.command
 def dupes():
