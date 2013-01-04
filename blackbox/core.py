@@ -274,10 +274,10 @@ def get_records():
     def gen():
         for result in results:
             d = result.dict
-            d.paths['path:meta'] = url_for('get_record', uuid=result.uuid)
-            d.paths['path:data'] = url_for('download_record', uuid=result.uuid)
-            d.paths['archive:meta'] = result.meta_archive
-            d.paths['archive:data'] = result.content_archive
+            d['links']['path:meta'] = url_for('get_record', uuid=result.uuid)
+            d['links']['path:data'] = url_for('download_record', uuid=result.uuid)
+            d['links']['archive:meta'] = result.meta_archive
+            d['links']['archive:data'] = result.content_archive
 
             yield d
 
