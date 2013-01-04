@@ -9,6 +9,7 @@ from uuid import uuid4
 
 import redis
 import requests
+import bobo
 from boto.s3.connection import S3Connection
 from celery import Celery
 from flask import Flask, request, Response, jsonify, redirect, url_for
@@ -25,12 +26,16 @@ S3_BUCKET = os.environ['S3_BUCKET']
 S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
 CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
 REDIS_URL = os.environ.get('OPENREDIS_URL')
+IA_ACCESS_KEY_ID = os.environ.get('IA_ACCESS_KEY_ID')
+IA_SECRET_ACCESS_KEY os.environ.get('IA_SECRET_ACCESS_KEY')
 SEARCH_TIMEOUT = 50
 
 # Connection pools.
+celery = Celery(broker=CLOUDAMQP_URL)
 es = ElasticSearch(ELASTICSEARCH_URL)
 bucket = S3Connection().get_bucket(S3_BUCKET)
-celery = Celery(broker=CLOUDAMQP_URL)
+ia = boto.connect_ia(IA_ACCESS_KEY_ID, IA_SECRET_ACCESS_KEY)
+archive = ia.lookup('kennethreitz-archive')
 
 cache = Cache()
 cache.cache = RedisCache()
@@ -109,6 +114,10 @@ class Record(object):
     def index_task(self, **kwargs):
         self.index(**kwargs)
 
+    @celery.task
+    def archive_task(self, **kwargs):
+        self.archive(**kwargs)
+
     @property
     def content(self):
         key = bucket.get_key(self.uuid)
@@ -131,7 +140,7 @@ class Record(object):
 
         self.persist()
         self.index()
-        self.archive()
+        # self.archive()
 
     def persist(self):
         key = bucket.new_key('{0}.json'.format(self.uuid))
@@ -143,8 +152,29 @@ class Record(object):
     def index(self):
          es.index("archives", "record", self.dict, id=self.uuid)
 
-    def archive(self):
-        pass
+    def archive(self, upload=True):
+        key = archive.new_key('{0}.json'.format(self.uuid))
+        key.update_metadata({'Content-Type': 'application/json'})
+
+        key.set_contents_from_string(self.json)
+
+        if upload:
+            self.archive_upload(url=self.content_url)
+
+      def archive_upload(self, data=None, url=None):
+
+        if url:
+            r = requests.get(url)
+            data = r.content
+
+        if data:
+            key = archive.new_key(self.uuid)
+
+            if self.content_type:
+                key.update_metadata({'Content-Type': self.content_type})
+
+            key.set_contents_from_string(data)
+            key.make_public()
 
     @property
     def dict(self):

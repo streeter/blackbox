@@ -32,6 +32,13 @@ def seed_index():
         r.index_task.delay(r)
 
 @manager.command
+def archive():
+    print 'Archiving:'
+    for key in progress.bar([i for i in iter_metadata()]):
+        r = Record.from_uuid(key.name[:-5])
+        r.archive_task.delay(r)
+
+@manager.command
 def dupes():
     importers.dupes.main(dry=False)
 
