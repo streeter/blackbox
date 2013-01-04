@@ -134,8 +134,16 @@ class Record(object):
         return '{}/{}'.format(prefix, self.uuid)
 
     @property
-    def archive_url(self):
-        pass
+    def meta_url(self):
+        return '{}.json'.format(self.content_url)
+
+    @property
+    def content_archive(self):
+        return 'http://archive.org/download/{}/{}'.format(IA_BUCKET, self.uuid)
+
+    @property
+    def meta_archive(self):
+        return '{}.json'.format(self.content_archive)
 
     def save(self):
 
@@ -147,6 +155,7 @@ class Record(object):
         key.update_metadata({'Content-Type': 'application/json'})
 
         key.set_contents_from_string(self.json)
+        key.make_public()
 
 
     def index(self):
@@ -267,6 +276,8 @@ def get_records():
             d = result.dict
             d['path:meta'] = url_for('get_record', uuid=result.uuid)
             d['path:data'] = url_for('download_record', uuid=result.uuid)
+            d['archive:meta'] = result.meta_archive
+            d['archive:data'] = result.content_archive
 
             yield d
 
