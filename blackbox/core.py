@@ -27,7 +27,7 @@ S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
 CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
 REDIS_URL = os.environ.get('OPENREDIS_URL')
 IA_ACCESS_KEY_ID = os.environ.get('IA_ACCESS_KEY_ID')
-IA_SECRET_ACCESS_KEY os.environ.get('IA_SECRET_ACCESS_KEY')
+IA_SECRET_ACCESS_KEY = os.environ.get('IA_SECRET_ACCESS_KEY')
 SEARCH_TIMEOUT = 50
 
 # Connection pools.
@@ -161,8 +161,7 @@ class Record(object):
         if upload:
             self.archive_upload(url=self.content_url)
 
-      def archive_upload(self, data=None, url=None):
-
+    def archive_upload(self, data=None, url=None):
         if url:
             r = requests.get(url)
             data = r.content
