@@ -21,11 +21,11 @@ app = Flask(__name__)
 app.debug = os.environ.get('DEBUG')
 
 # Statics.
-ELASTICSEARCH_URL = os.environ['ELASTICSEARCH_URL']
+ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL', os.environ.get('BONSAI_URL'))
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_BUCKET_DOMAIN = os.environ.get('S3_BUCKET_DOMAIN')
 CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
-REDIS_URL = os.environ.get('OPENREDIS_URL')
+REDIS_URL = os.environ.get('OPENREDIS_URL', os.environ.get('REDISTOGO_URL'))
 IA_ACCESS_KEY_ID = os.environ.get('IA_ACCESS_KEY_ID')
 IA_SECRET_ACCESS_KEY = os.environ.get('IA_SECRET_ACCESS_KEY')
 IA_BUCKET = os.environ.get('IA_BUCKET')
