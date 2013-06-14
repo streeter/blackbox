@@ -20,8 +20,8 @@ from docopt import docopt
 
 TIMELINE_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
-def iter_tweets(exclude_replies=True, pages=1):
 
+def iter_tweets(exclude_replies=True, pages=1):
     params = {
         'exclude_replies': exclude_replies,
         'include_entities': True,
@@ -35,9 +35,10 @@ def iter_tweets(exclude_replies=True, pages=1):
         r = foauth.get(TIMELINE_URL, params=params)
 
         for tweet in r.json():
+            if 'id' not in tweet:
+                continue
             yield tweet
-
-        params['max_id'] = tweet['id']
+            params['max_id'] = tweet['id']
 
 
 def lookup_record(tweet):
@@ -50,12 +51,17 @@ def lookup_record(tweet):
 
 def main(update=False, dry=False, pages=1):
     for tweet in iter_tweets(pages=pages):
+
+        if 'id' not in tweet:
+            print('Malformed tweet: {}'.format(tweet))
+            continue
+
         existing = lookup_record(tweet)
         if existing:
-            print 'Existing:',
+            print('Existing:')
 
             if not update:
-                print '{0}. \nExiting.'.format(existing)
+                print('{0}. \nExiting.'.format(existing))
                 return
 
         r = existing or blackbox.Record()
@@ -77,12 +83,7 @@ def main(update=False, dry=False, pages=1):
             r.save(archive=True)
 
             r.upload_task.delay(r, data=json.dumps(tweet), archive=True)
-        print r
-
-
-
-
-
+        print(r)
 
 
 if __name__ == '__main__':
