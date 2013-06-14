@@ -18,7 +18,7 @@ import json
 from _util import *
 from docopt import docopt
 
-TIMELINE_URL = 'https://api.twitter.com/1/statuses/user_timeline.json'
+TIMELINE_URL = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
 
 def iter_tweets(exclude_replies=True, pages=1):
 
