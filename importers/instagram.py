@@ -75,7 +75,7 @@ def main(update=False, dry=False):
 
         r.content_type = 'image/jpeg'
         r.ref = photo['link']
-        r.description = 'Instagram by @kennethreitz. Caption: {}'.format(photo['caption'])
+        r.description = u'Instagram by @kennethreitz. Caption: {}'.format(photo['caption'])
         r.author = 'Kenneth Reitz'
         r.links['src'] = photo['url']
         r.epoch = photo['created'] * 1000
