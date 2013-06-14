@@ -153,7 +153,7 @@ class Record(object):
         self.persist()
         self.index()
 
-        if archive:
+        if False and archive:
             self.archive(upload=False)
 
     def persist(self):
