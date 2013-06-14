@@ -58,7 +58,7 @@ def main(update=False, dry=False):
         r.content_type = 'image/jpeg'
         r.ref = 'http://www.flickr.com/photos/{}/{}'.format(photo['pathalias'], photo['id'])
         r.description = u'Flickr photo. {}'.format(photo['title'])
-        r.author = 'Kenneth Reitz'
+        r.author = 'Chris Streeter'
         r.links['src'] = photo['url_o']
         r.epoch = int(photo[u'dateupload'])*1000
 

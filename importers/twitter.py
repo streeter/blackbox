@@ -67,8 +67,8 @@ def main(update=False, dry=False, pages=1):
         r = existing or blackbox.Record()
         r.epoch = epoch(parse(tweet[u'created_at']))
         r.content_type = 'application/json'
-        r.ref = 'https://twitter.com/kennethreitz/status/{}'.format(tweet['id'])
-        r.author = 'Kenneth Reitz'
+        r.ref = 'https://twitter.com/chrisstreeter/status/{}'.format(tweet['id'])
+        r.author = 'Chris Streeter'
 
         r.description = u'Tweet: {}'.format(tweet['text'])
         r.metadata['service'] = 'twitter'

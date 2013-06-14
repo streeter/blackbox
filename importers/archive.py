@@ -14,7 +14,7 @@ Options:
 from _util import *
 from docopt import docopt
 
-def main(url, description=None, author='Kenneth Reitz'):
+def main(url, description=None, author='Chris Streeter'):
 
     if description is None:
         description = 'Archive of {}'.format(url)

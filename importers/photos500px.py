@@ -50,7 +50,7 @@ def main(update=False, dry=False):
         r.content_type = 'image/jpeg'
         r.ref = 'http://500px.com/photo/{}'.format(photo['id'])
         r.description = u'500px: {}, '.format(photo['name'], photo['description'])
-        r.author = 'Kenneth Reitz'
+        r.author = 'Chris Streeter'
         r.epoch = epoch(parse(photo[u'created_at']))
 
         r.metadata['service'] = '500px'
