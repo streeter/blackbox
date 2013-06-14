@@ -5,6 +5,7 @@ from clint.textui import progress
 import importers
 from blackbox import *
 
+
 def iter_metadata():
     for key in bucket.list():
         if key.name.endswith('.json'):
@@ -17,7 +18,7 @@ manager = Manager(app)
 
 @manager.command
 def hello():
-    print "hello"
+    print("hello")
 
 
 @manager.command
@@ -26,14 +27,14 @@ def purge_index():
 
 @manager.command
 def seed_index():
-    print 'Indexing:'
+    print('Indexing:')
     for key in progress.bar([i for i in iter_metadata()]):
         r = Record.from_uuid(key.name[:-5])
         r.index_task.delay(r)
 
 @manager.command
 def seed_archive():
-    print 'Archiving:'
+    print('Archiving:')
     archive_keys = [key.name for key in archive.list()]
 
     for key in progress.bar([i for i in iter_metadata()]):
@@ -41,23 +42,28 @@ def seed_archive():
             r = Record.from_uuid(key.name[:-5])
             r.archive_task.delay(r)
 
+
 @manager.command
 def dupes():
     importers.dupes.main(dry=False)
 
+
 @manager.command
 def imports():
-    print 'Importing Instagram'
-    importers.instagram.main(dry=False)
+    dry = False
+    update = False
 
-    print 'Importing 500px'
-    importers.photos500px.main(dry=False)
+    print('Importing Instagram')
+    importers.instagram.main(dry=dry, update=update)
 
-    print 'Importing Twitter'
-    importers.twitter.main(dry=False, pages=2, update=False)
+    print('Importing 500px')
+    importers.photos500px.main(dry=dry, update=update)
 
-    print 'Importing Flickr'
-    importers.flickr.main(dry=False)
+    print('Importing Twitter')
+    importers.twitter.main(dry=dry, update=update, pages=300)
+
+    print('Importing Flickr')
+    importers.flickr.main(dry=dry, update=update)
 
 
 if __name__ == "__main__":
