@@ -261,8 +261,8 @@ def search(query, sort=None, size=None, **kwargs):
 @app.route('/')
 def hello():
     j = {
-        'source': 'https://github.com/kennethreitz/blackbox',
-        'curator': 'Kenneth Reitz',
+        'source': 'https://github.com/chrisstreeter/blackbox',
+        'curator': 'Chris Streeter',
         'resources': {
             '/records': 'The collection of records.',
             '/records/:id': 'The metadata of the given record.',
